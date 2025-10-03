@@ -1,0 +1,1979 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS Student Productivity Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --border: #e2e8f0;
+            --text: #334155;
+            --text-light: #64748b;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-bg: white;
+            --header-bg: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            --nav-bg: var(--dark);
+        }
+
+        .dark-mode {
+            --primary: #818cf8;
+            --primary-dark: #6366f1;
+            --secondary: #a78bfa;
+            --success: #34d399;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --dark: #0f172a;
+            --light: #1e293b;
+            --border: #334155;
+            --text: #e2e8f0;
+            --text-light: #94a3b8;
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --card-bg: #1e293b;
+            --header-bg: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            --nav-bg: #0f172a;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .header {
+            background: var(--header-bg);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255,255,255,0.3);
+            transform: rotate(30deg);
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: var(--nav-bg);
+            overflow-x: auto;
+            flex-wrap: nowrap;
+            position: relative;
+        }
+
+        .nav-tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: white;
+            font-size: 1em;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-tab:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .nav-tab.active {
+            background: rgba(255,255,255,0.15);
+            border-bottom-color: var(--primary);
+        }
+
+        .nav-tab::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .nav-tab.active::after {
+            transform: scaleX(1);
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .card h2 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .input-group input,
+        .input-group select,
+        .input-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+            background: var(--card-bg);
+            color: var(--text);
+        }
+
+        .input-group input:focus,
+        .input-group select:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .task-item {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+        .task-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .task-item.completed {
+            opacity: 0.6;
+            text-decoration: line-through;
+            border-left-color: var(--success);
+        }
+
+        .task-item.high-priority { border-left-color: var(--danger); }
+        .task-item.medium-priority { border-left-color: var(--warning); }
+
+        .timer-display {
+            font-size: 4em;
+            text-align: center;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 30px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .note-item {
+            background: #fef3c7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .dark-mode .note-item {
+            background: #433407;
+        }
+
+        .note-title {
+            font-weight: bold;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .dark-mode .note-title {
+            color: #fef3c7;
+        }
+
+        .note-content {
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        .note-date {
+            font-size: 0.85em;
+            color: var(--text-light);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .stat-card h3 {
+            font-size: 2.5em;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            opacity: 0.9;
+        }
+
+        .schedule-item {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .schedule-time {
+            font-weight: bold;
+            color: var(--primary);
+            min-width: 80px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: var(--border);
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .code-snippet {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+
+        .flashcard {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 20px 0;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .dark-mode .flashcard {
+            background: var(--light);
+        }
+
+        .resource-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            text-decoration: none;
+            color: var(--text);
+            transition: all 0.3s;
+        }
+
+        .resource-link:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateX(10px);
+        }
+
+        .habit-tracker {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .habit-day {
+            aspect-ratio: 1;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .habit-day.completed {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        /* New Styles for Enhanced Features */
+        .search-bar {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 12px 45px 12px 15px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1em;
+            background: var(--card-bg);
+            color: var(--text);
+        }
+
+        .search-bar i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .filter-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 15px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: var(--card-bg);
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background: var(--success);
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateX(150%);
+            transition: transform 0.3s;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.error {
+            background: var(--danger);
+        }
+
+        .notification.warning {
+            background: var(--warning);
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin: 20px 0;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .calendar-day:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .calendar-day.today {
+            background: var(--primary);
+            color: white;
+        }
+
+        .calendar-day.has-event {
+            position: relative;
+        }
+
+        .calendar-day.has-event::after {
+            content: '';
+            position: absolute;
+            bottom: 3px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 5px;
+            height: 5px;
+            background: var(--success);
+            border-radius: 50%;
+        }
+
+        .collaboration-card {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .export-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .floating-action-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+
+        .floating-action-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+        }
+
+        .study-timer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .study-session {
+            text-align: center;
+            padding: 15px;
+            background: var(--light);
+            border-radius: 8px;
+            min-width: 120px;
+        }
+
+        .study-session h4 {
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .achievement-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            background: var(--light);
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .achievement-badge i {
+            color: var(--warning);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-state i {
+            font-size: 3em;
+            margin-bottom: 15px;
+            color: var(--border);
+        }
+
+        .flashcard-controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .flashcard-counter {
+            text-align: center;
+            margin-bottom: 10px;
+            color: var(--text-light);
+        }
+
+        .snippet-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .snippet-item {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .snippet-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .nav-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .nav-tab {
+                flex: 1;
+                min-width: 120px;
+                text-align: center;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .timer-display {
+                font-size: 3em;
+            }
+            
+            .study-timer {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.7em;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-options {
+                justify-content: center;
+            }
+            
+            .export-options {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 CS Student Productivity Hub</h1>
+            <p>Platform Produktivitas Lengkap untuk Mahasiswa Ilmu Komputer</p>
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('dashboard')"><i class="fas fa-chart-bar"></i> Dashboard</button>
+            <button class="nav-tab" onclick="switchTab('tasks')"><i class="fas fa-tasks"></i> Task Manager</button>
+            <button class="nav-tab" onclick="switchTab('pomodoro')"><i class="fas fa-clock"></i> Pomodoro</button>
+            <button class="nav-tab" onclick="switchTab('notes')"><i class="fas fa-sticky-note"></i> Notes</button>
+            <button class="nav-tab" onclick="switchTab('schedule')"><i class="fas fa-calendar-alt"></i> Jadwal</button>
+            <button class="nav-tab" onclick="switchTab('grades')"><i class="fas fa-chart-line"></i> IPK Calculator</button>
+            <button class="nav-tab" onclick="switchTab('flashcards')"><i class="fas fa-layer-group"></i> Flashcards</button>
+            <button class="nav-tab" onclick="switchTab('code')"><i class="fas fa-code"></i> Code Snippets</button>
+            <button class="nav-tab" onclick="switchTab('resources')"><i class="fas fa-book"></i> Resources</button>
+            <button class="nav-tab" onclick="switchTab('habits')"><i class="fas fa-fire"></i> Habit Tracker</button>
+        </div>
+
+        <div class="content">
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <h2><i class="fas fa-chart-bar"></i> Dashboard Overview</h2>
+                
+                <div class="search-bar">
+                    <input type="text" id="dashboardSearch" placeholder="Cari task, catatan, atau lainnya...">
+                    <i class="fas fa-search"></i>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3 id="taskCount">0</h3>
+                        <p>Total Tasks</p>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #10b981, #059669);">
+                        <h3 id="completedTasks">0</h3>
+                        <p>Completed</p>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                        <h3 id="pomodoroCount">0</h3>
+                        <p>Pomodoro Sessions</p>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+                        <h3 id="currentGPAStat">0.00</h3>
+                        <p>Current GPA</p>
+                    </div>
+                </div>
+                
+                <div class="grid">
+                    <div class="card">
+                        <h2><i class="fas fa-tasks"></i> Task Progress</h2>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="taskProgress" style="width: 0%">0%</div>
+                        </div>
+                        <p>Progress menyelesaikan semua task</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h2><i class="fas fa-trophy"></i> Pencapaian</h2>
+                        <div id="achievementsList">
+                            <span class="achievement-badge"><i class="fas fa-medal"></i> Pemula</span>
+                            <span class="achievement-badge"><i class="fas fa-fire"></i> 5 Hari Berurutan</span>
+                            <span class="achievement-badge"><i class="fas fa-brain"></i> 10 Sesi Pomodoro</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2><i class="fas fa-chart-line"></i> Study Analytics</h2>
+                    <div class="study-timer">
+                        <div class="study-session">
+                            <h4>Hari Ini</h4>
+                            <p id="studyToday">0 jam</p>
+                        </div>
+                        <div class="study-session">
+                            <h4>Minggu Ini</h4>
+                            <p id="studyWeek">0 jam</p>
+                        </div>
+                        <div class="study-session">
+                            <h4>Bulan Ini</h4>
+                            <p id="studyMonth">0 jam</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Task Manager Tab -->
+            <div id="tasks" class="tab-content">
+                <div class="card">
+                    <h2><i class="fas fa-tasks"></i> Task Manager</h2>
+                    <div class="input-group">
+                        <input type="text" id="taskTitle" placeholder="Nama Task...">
+                    </div>
+                    <div class="grid">
+                        <div class="input-group">
+                            <label>Prioritas</label>
+                            <select id="taskPriority">
+                                <option value="low">Rendah</option>
+                                <option value="medium">Sedang</option>
+                                <option value="high">Tinggi</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>Deadline</label>
+                            <input type="date" id="taskDeadline">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Kategori</label>
+                        <select id="taskCategory">
+                            <option value="kuliah">Kuliah</option>
+                            <option value="tugas">Tugas</option>
+                            <option value="proyek">Proyek</option>
+                            <option value="lainnya">Lainnya</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="addTask()"><i class="fas fa-plus"></i> Tambah Task</button>
+                </div>
+                
+                <div class="filter-options">
+                    <button class="filter-btn active" onclick="filterTasks('all')">Semua</button>
+                    <button class="filter-btn" onclick="filterTasks('active')">Aktif</button>
+                    <button class="filter-btn" onclick="filterTasks('completed')">Selesai</button>
+                    <button class="filter-btn" onclick="filterTasks('high')">Prioritas Tinggi</button>
+                </div>
+                
+                <div class="card">
+                    <h2><i class="fas fa-list"></i> Daftar Tasks</h2>
+                    <div id="taskList"></div>
+                </div>
+            </div>
+
+            <!-- Pomodoro Tab -->
+            <div id="pomodoro" class="tab-content">
+                <div class="card">
+                    <h2><i class="fas fa-clock"></i> Pomodoro Timer</h2>
+                    <div class="timer-display" id="timerDisplay">25:00</div>
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <button class="btn btn-success" id="startBtn" onclick="startTimer()"><i class="fas fa-play"></i> Start</button>
+                        <button class="btn btn-danger" onclick="resetTimer()"><i class="fas fa-stop"></i> Reset</button>
+                        <button class="btn btn-outline" onclick="setTimer(5)">Istirahat Pendek</button>
+                        <button class="btn btn-outline" onclick="setTimer(15)">Istirahat Panjang</button>
+                    </div>
+                    <p style="text-align: center; color: var(--text-light);" id="pomodoroStatus">Siap untuk mulai fokus!</p>
+                </div>
+                
+                <div class="card">
+                    <h2><i class="fas fa-chart-pie"></i> Statistik Pomodoro</h2>
+                    <div class="grid">
+                        <div class="stat-card" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                            <h3 id="todaySessions">0</h3>
+                            <p>Hari Ini</p>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, #10b981, #059669);">
+                            <h3 id="weekSessions">0</h3>
+                            <p>Minggu Ini</p>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                            <h3 id="totalSessions">0</h3>
+                            <p>Total</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notes Tab -->
+            <div id="notes" class="tab-content">
+                <div class="card">
+                    <h2><i class="fas fa-sticky-note"></i> Quick Notes</h2>
+                    <div class="input-group">
+                        <input type="text" id="noteTitle" placeholder="Judul catatan...">
+                    </div>
+                    <div class="input-group">
+                        <textarea id="noteContent" placeholder="Tulis catatan..." rows="5"></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="addNote()"><i class="fas fa-save"></i> Simpan Catatan</button>
+                </div>
+                <div class="card">
+                    <h2><i class="fas fa-book"></i> Catatan Tersimpan</h2>
+                    <div id="notesList" class="grid"></div>
+                </div>
+            </div>
+
+            <!-- Schedule Tab -->
+            <div id="schedule" class="tab-content">
+                <div class="card">
+                    <h2><i class="fas fa-calendar-alt"></i> Jadwal Kuliah</h2>
+                    <div class="grid">
+                        <div class="input-group">
+                            <input type="text" id="courseName" placeholder="Nama mata kuliah...">
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="courseDay" placeholder="Hari (e.g. Senin)">
+                        </div>
+                        <div class="input-group">
+                            <input type="time" id="courseStartTime">
+                        </div>
+                        <div class="input-group">
+                            <input type="time" id="courseEndTime">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="addSchedule()"><i class="fas fa-plus"></i> Tambah Jadwal</button>
+                </div>
+                <div class="card">
+                    <h2><i class="fas fa-calendar-week"></i> Jadwal Minggu Ini</h2>
+                    <div id="scheduleList"></div>
+                </div>
+            </div>
+
+            <!-- Grades Tab -->
+            <div id="grades" class="tab-content">
+                <div class="card">
+                    <h2><i class="fas fa-chart-line"></i> Kalkulator IPK</h2>
+                    <div class="grid">
+                        <div class="input-group">
+                            <input type="text" id="gradeCourse" placeholder="Nama mata kuliah...">
+                        </div>
+                        <div class="input-group">
+                            <input type="number" id="gradeSKS" min="1" max="6" value="3" placeholder="SKS">
+                        </div>
+                        <div class="input-group">
+                            <select id="gradeValue">
+                                <option value="A">A (4.0)</option>
+                                <option value="B">B (3.0)</option>
+                                <option value="C">C (2.0)</option>
+                                <option value="D">D (1.0)</option>
+                                <option value="E">E (0.0)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="addGrade()"><i class="fas fa-plus"></i> Tambah Nilai</button>
+                </div>
+                <div class="card">
+                    <h2><i class="fas fa-list-ol"></i> Daftar Nilai</h2>
+                    <div id="gradesList"></div>
+                    <div style="margin-top: 20px; padding: 20px; background: var(--light); border-radius: 8px;">
+                        <h3 style="color: var(--primary);">IPK Saat Ini: <span id="currentGPA">0.00</span></h3>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Flashcards Tab -->
+            <div id="flashcards" class="tab-content">
+                <div class="card">
+                    <h2><i class="fas fa-layer-group"></i> Buat Flashcard</h2>
+                    <div class="input-group">
+                        <textarea id="flashcardQuestion" rows="3" placeholder="Pertanyaan/Konsep..."></textarea>
+                    </div>
+                    <div class="input-group">
+                        <textarea id="flashcardAnswer" rows="3" placeholder="Jawaban/Penjelasan..."></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="addFlashcard()"><i class="fas fa-plus"></i> Tambah Flashcard</button>
+                </div>
+                 <div class="card">
+                    <h2><i class="fas fa-book-open"></i> Study Flashcards</h2>
+                    <div class="flashcard-counter" id="flashcardCounter">0/0</div>
+                    <div id="flashcardDisplay"></div>
+                    <div class="flashcard-controls">
+                        <button class="btn btn-outline" onclick="prevFlashcard()"><i class="fas fa-chevron-left"></i> Sebelumnya</button>
+                        <button class="btn btn-primary" onclick="flipFlashcard()"><i class="fas fa-sync-alt"></i> Balik</button>
+                        <button class="btn btn-outline" onclick="nextFlashcard()">Selanjutnya <i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Code Snippets Tab -->
+            <div id="code" class="tab-content">
+                <div class="card">
+                    <h2><i class="fas fa-code"></i> Simpan Code Snippet</h2>
+                    <div class="input-group">
+                        <input type="text" id="snippetTitle" placeholder="Judul snippet...">
+                    </div>
+                    <div class="input-group">
+                        <select id="snippetLanguage">
+                            <option value="html">HTML</option>
+                            <option value="css">CSS</option>
+                            <option value="javascript">JavaScript</option>
+                            <option value="python">Python</option>
+                            <option value="java">Java</option>
+                            <option value="cpp">C++</option>
+                            <option value="other">Lainnya</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <textarea id="snippetCode" rows="6" placeholder="Tulis atau tempel kode di sini..."></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="addSnippet()"><i class="fas fa-save"></i> Simpan Snippet</button>
+                </div>
+                <div class="card">
+                    <h2><i class="fas fa-folder-open"></i> Snippet Tersimpan</h2>
+                    <div id="snippetList"></div>
+                </div>
+            </div>
+
+            <!-- Resources Tab -->
+            <div id="resources" class="tab-content">
+                <div class="card">
+                    <h2><i class="fas fa-book"></i> Tambah Resource Link</h2>
+                    <div class="grid">
+                        <div class="input-group">
+                            <input type="text" id="resourceTitle" placeholder="Judul Resource...">
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="resourceUrl" placeholder="URL Lengkap (https://...)">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <select id="resourceCategory">
+                            <option value="tutorial">Tutorial</option>
+                            <option value="documentation">Dokumentasi</option>
+                            <option value="video">Video</option>
+                            <option value="article">Artikel</option>
+                            <option value="tool">Tools</option>
+                            <option value="other">Lainnya</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="addResource()"><i class="fas fa-save"></i> Simpan Resource</button>
+                </div>
+                <div class="card">
+                    <h2><i class="fas fa-link"></i> Daftar Resources</h2>
+                    <div id="resourceList"></div>
+                </div>
+            </div>
+            
+            <!-- Habit Tracker Tab -->
+            <div id="habits" class="tab-content">
+                <div class="card">
+                    <h2><i class="fas fa-fire"></i> Tambah Kebiasaan Baru</h2>
+                    <div class="input-group">
+                        <input type="text" id="habitTitle" placeholder="Contoh: Belajar Algoritma 1 jam">
+                    </div>
+                    <button class="btn btn-primary" onclick="addHabit()"><i class="fas fa-plus"></i> Tambah Habit</button>
+                </div>
+                <div class="card">
+                    <h2><i class="fas fa-chart-line"></i> Lacak Kebiasaanmu</h2>
+                    <div id="habitList"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+    <div class="floating-action-btn" id="quickAddBtn">
+        <i class="fas fa-plus"></i>
+    </div>
+    
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationText">Task berhasil ditambahkan!</span>
+    </div>
+
+    <script>
+        // SCRIPT JAVASCRIPT UNTUK SEMUA FUNGSI
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load semua data dari localStorage saat halaman dibuka
+            loadAllData();
+            
+            // Set up event listeners
+            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+            document.getElementById('quickAddBtn').addEventListener('click', showQuickAddMenu);
+            
+            // Check if dark mode was previously enabled
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('themeToggle').innerHTML = '<i class="fas fa-sun"></i>';
+            }
+        });
+
+        // Data utama aplikasi
+        let data = {
+            tasks: [],
+            pomodoroCount: 0,
+            pomodoroStats: { today: 0, week: 0, total: 0 },
+            notes: [],
+            schedule: [],
+            grades: [],
+            flashcards: [],
+            currentFlashcard: 0,
+            snippets: [],
+            resources: [],
+            habits: [],
+            studyStats: { today: 0, week: 0, month: 0 }
+        };
+
+        // Fungsi untuk menyimpan semua data ke localStorage
+        function saveAllData() {
+            localStorage.setItem('csProductivityHubData', JSON.stringify(data));
+        }
+
+        // Fungsi untuk memuat semua data dari localStorage
+        function loadAllData() {
+            const savedData = localStorage.getItem('csProductivityHubData');
+            if (savedData) {
+                data = JSON.parse(savedData);
+            }
+            renderAll();
+        }
+
+        // Fungsi untuk me-render semua komponen
+        function renderAll() {
+            renderTasks();
+            renderPomodoro();
+            renderNotes();
+            renderSchedule();
+            renderGrades();
+            renderFlashcards();
+            renderSnippets();
+            renderResources();
+            renderHabits();
+            updateDashboard();
+            updatePomodoroStats();
+        }
+        
+        // Fungsi navigasi Tab
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // --- Fitur Task Manager ---
+        function addTask() {
+            const title = document.getElementById('taskTitle').value;
+            const priority = document.getElementById('taskPriority').value;
+            const deadline = document.getElementById('taskDeadline').value;
+            const category = document.getElementById('taskCategory').value;
+            
+            if (!title) { 
+                showNotification('Judul task tidak boleh kosong!', 'error');
+                return; 
+            }
+            
+            data.tasks.push({ 
+                id: Date.now(), 
+                title, 
+                priority, 
+                deadline, 
+                category,
+                completed: false,
+                createdAt: new Date().toISOString()
+            });
+            
+            saveAllData();
+            renderTasks();
+            document.getElementById('taskTitle').value = '';
+            document.getElementById('taskDeadline').value = '';
+            
+            showNotification('Task berhasil ditambahkan!');
+        }
+        
+        function renderTasks() {
+            const taskList = document.getElementById('taskList');
+            const filter = taskList.getAttribute('data-filter') || 'all';
+            
+            let filteredTasks = data.tasks;
+            
+            if (filter === 'active') {
+                filteredTasks = data.tasks.filter(task => !task.completed);
+            } else if (filter === 'completed') {
+                filteredTasks = data.tasks.filter(task => task.completed);
+            } else if (filter === 'high') {
+                filteredTasks = data.tasks.filter(task => task.priority === 'high');
+            }
+            
+            if (filteredTasks.length === 0) {
+                taskList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-tasks"></i>
+                        <p>Tidak ada task yang ditemukan</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            taskList.innerHTML = filteredTasks.map(task => `
+                <div class="task-item ${task.completed ? 'completed' : ''} ${task.priority}-priority">
+                    <div>
+                        <strong>${task.title}</strong>
+                        <div style="font-size: 0.85em; color: var(--text-light); margin-top: 5px;">
+                            <span class="badge">${task.category}</span> | 
+                            <span class="badge">${task.priority}</span> | 
+                            ${task.deadline ? `Deadline: ${formatDate(task.deadline)}` : 'Tidak ada deadline'}
+                        </div>
+                    </div>
+                    <div>
+                        <button class="btn ${task.completed ? 'btn-warning' : 'btn-success'}" onclick="toggleTask(${task.id})">
+                            <i class="fas fa-${task.completed ? 'undo' : 'check'}"></i>
+                        </button>
+                        <button class="btn btn-danger" onclick="deleteTask(${task.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function toggleTask(id) {
+            const task = data.tasks.find(t => t.id === id);
+            if (task) {
+                task.completed = !task.completed;
+                saveAllData();
+                renderTasks();
+                updateDashboard();
+                
+                showNotification(`Task "${task.title}" ${task.completed ? 'diselesaikan' : 'dibuka kembali'}!`);
+            }
+        }
+        
+        function deleteTask(id) {
+            const task = data.tasks.find(t => t.id === id);
+            if (task) {
+                data.tasks = data.tasks.filter(t => t.id !== id);
+                saveAllData();
+                renderTasks();
+                updateDashboard();
+                
+                showNotification(`Task "${task.title}" dihapus!`);
+            }
+        }
+        
+        function filterTasks(filter) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            const taskList = document.getElementById('taskList');
+            taskList.setAttribute('data-filter', filter);
+            renderTasks();
+        }
+
+        // --- Fitur Pomodoro Timer ---
+        let timerInterval;
+        let timerSeconds = 25 * 60;
+        let isTimerRunning = false;
+        
+        function startTimer() {
+            if (isTimerRunning) return;
+            
+            isTimerRunning = true;
+            document.getElementById('startBtn').innerHTML = '<i class="fas fa-pause"></i> Pause';
+            document.getElementById('startBtn').setAttribute('onclick', 'pauseTimer()');
+            document.getElementById('pomodoroStatus').textContent = 'Fokus! Waktu sedang berjalan...';
+            
+            timerInterval = setInterval(() => {
+                timerSeconds--;
+                updateTimerDisplay();
+                
+                if (timerSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    isTimerRunning = false;
+                    document.getElementById('startBtn').innerHTML = '<i class="fas fa-play"></i> Start';
+                    document.getElementById('startBtn').setAttribute('onclick', 'startTimer()');
+                    document.getElementById('pomodoroStatus').textContent = 'Sesi selesai! Istirahat sejenak.';
+                    
+                    // Update pomodoro stats
+                    data.pomodoroStats.today++;
+                    data.pomodoroStats.week++;
+                    data.pomodoroStats.total++;
+                    saveAllData();
+                    updatePomodoroStats();
+                    
+                    showNotification('Sesi Pomodoro selesai! Waktunya istirahat.', 'success');
+                }
+            }, 1000);
+        }
+        
+        function pauseTimer() {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            document.getElementById('startBtn').innerHTML = '<i class="fas fa-play"></i> Resume';
+            document.getElementById('startBtn').setAttribute('onclick', 'startTimer()');
+            document.getElementById('pomodoroStatus').textContent = 'Timer dijeda';
+        }
+        
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            setTimer(25);
+            document.getElementById('startBtn').innerHTML = '<i class="fas fa-play"></i> Start';
+            document.getElementById('startBtn').setAttribute('onclick', 'startTimer()');
+            document.getElementById('pomodoroStatus').textContent = 'Siap untuk mulai fokus!';
+        }
+        
+        function setTimer(minutes) {
+            timerSeconds = minutes * 60;
+            updateTimerDisplay();
+        }
+        
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timerSeconds / 60);
+            const seconds = timerSeconds % 60;
+            document.getElementById('timerDisplay').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        function updatePomodoroStats() {
+            document.getElementById('todaySessions').textContent = data.pomodoroStats.today;
+            document.getElementById('weekSessions').textContent = data.pomodoroStats.week;
+            document.getElementById('totalSessions').textContent = data.pomodoroStats.total;
+        }
+
+        // --- Fitur Notes ---
+        function addNote() {
+            const title = document.getElementById('noteTitle').value;
+            const content = document.getElementById('noteContent').value;
+            
+            if (!title || !content) {
+                showNotification('Judul dan isi catatan tidak boleh kosong!', 'error');
+                return;
+            }
+            
+            data.notes.push({
+                id: Date.now(),
+                title,
+                content,
+                createdAt: new Date().toISOString()
+            });
+            
+            saveAllData();
+            renderNotes();
+            
+            document.getElementById('noteTitle').value = '';
+            document.getElementById('noteContent').value = '';
+            
+            showNotification('Catatan berhasil disimpan!');
+        }
+        
+        function renderNotes() {
+            const notesList = document.getElementById('notesList');
+            
+            if (data.notes.length === 0) {
+                notesList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-sticky-note"></i>
+                        <p>Belum ada catatan</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            notesList.innerHTML = data.notes.map(note => `
+                <div class="note-item">
+                    <div class="note-title">${note.title}</div>
+                    <div class="note-content">${note.content}</div>
+                    <div class="note-date">${formatDate(note.createdAt)}</div>
+                    <div style="margin-top: 10px;">
+                        <button class="btn btn-danger" onclick="deleteNote(${note.id})">
+                            <i class="fas fa-trash"></i> Hapus
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function deleteNote(id) {
+            data.notes = data.notes.filter(note => note.id !== id);
+            saveAllData();
+            renderNotes();
+            showNotification('Catatan dihapus!');
+        }
+
+        // --- Fitur Jadwal ---
+        function addSchedule() {
+            const name = document.getElementById('courseName').value;
+            const day = document.getElementById('courseDay').value;
+            const start = document.getElementById('courseStartTime').value;
+            const end = document.getElementById('courseEndTime').value;
+            
+            if (!name || !day || !start || !end) {
+                showNotification('Semua field jadwal harus diisi!', 'error');
+                return;
+            }
+            
+            data.schedule.push({
+                id: Date.now(),
+                name,
+                day,
+                start,
+                end
+            });
+            
+            saveAllData();
+            renderSchedule();
+            
+            document.getElementById('courseName').value = '';
+            document.getElementById('courseDay').value = '';
+            document.getElementById('courseStartTime').value = '';
+            document.getElementById('courseEndTime').value = '';
+            
+            showNotification('Jadwal berhasil ditambahkan!');
+        }
+        
+        function renderSchedule() {
+            const scheduleList = document.getElementById('scheduleList');
+            
+            if (data.schedule.length === 0) {
+                scheduleList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-calendar-alt"></i>
+                        <p>Belum ada jadwal</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            scheduleList.innerHTML = data.schedule.map(item => `
+                <div class="schedule-item">
+                    <div class="schedule-time">${item.day}<br>${item.start} - ${item.end}</div>
+                    <div><strong>${item.name}</strong></div>
+                    <button class="btn btn-danger" onclick="deleteSchedule(${item.id})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+        
+        function deleteSchedule(id) {
+            data.schedule = data.schedule.filter(item => item.id !== id);
+            saveAllData();
+            renderSchedule();
+            showNotification('Jadwal dihapus!');
+        }
+
+        // --- Fitur Kalkulator IPK ---
+        function addGrade() {
+            const course = document.getElementById('gradeCourse').value;
+            const sks = parseInt(document.getElementById('gradeSKS').value);
+            const value = document.getElementById('gradeValue').value;
+            
+            if (!course || !sks) {
+                showNotification('Nama mata kuliah dan SKS harus diisi!', 'error');
+                return;
+            }
+            
+            data.grades.push({
+                id: Date.now(),
+                course,
+                sks,
+                value
+            });
+            
+            saveAllData();
+            renderGrades();
+            
+            document.getElementById('gradeCourse').value = '';
+            document.getElementById('gradeSKS').value = '3';
+            
+            showNotification('Nilai berhasil ditambahkan!');
+        }
+        
+        function renderGrades() {
+            const gradesList = document.getElementById('gradesList');
+            
+            if (data.grades.length === 0) {
+                gradesList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-graduation-cap"></i>
+                        <p>Belum ada nilai</p>
+                    </div>
+                `;
+                document.getElementById('currentGPA').textContent = '0.00';
+                return;
+            }
+            
+            let totalPoints = 0;
+            let totalCredits = 0;
+            
+            gradesList.innerHTML = data.grades.map(grade => {
+                const pointValue = getGradePoint(grade.value);
+                totalPoints += pointValue * grade.sks;
+                totalCredits += grade.sks;
+                
+                return `
+                    <div class="task-item">
+                        <div>
+                            <strong>${grade.course}</strong>
+                            <div style="font-size: 0.85em; color: var(--text-light); margin-top: 5px;">
+                                ${grade.sks} SKS - Nilai: ${grade.value} (${pointValue.toFixed(1)})
+                            </div>
+                        </div>
+                        <button class="btn btn-danger" onclick="deleteGrade(${grade.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+            
+            const gpa = totalCredits > 0 ? (totalPoints / totalCredits).toFixed(2) : '0.00';
+            document.getElementById('currentGPA').textContent = gpa;
+        }
+        
+        function getGradePoint(grade) {
+            switch(grade) {
+                case 'A': return 4.0;
+                case 'B': return 3.0;
+                case 'C': return 2.0;
+                case 'D': return 1.0;
+                default: return 0.0;
+            }
+        }
+        
+        function deleteGrade(id) {
+            data.grades = data.grades.filter(grade => grade.id !== id);
+            saveAllData();
+            renderGrades();
+            showNotification('Nilai dihapus!');
+        }
+
+        // --- Fitur Flashcards ---
+        function addFlashcard() {
+            const question = document.getElementById('flashcardQuestion').value;
+            const answer = document.getElementById('flashcardAnswer').value;
+            
+            if (!question || !answer) {
+                showNotification('Pertanyaan dan jawaban harus diisi!', 'error');
+                return;
+            }
+            
+            data.flashcards.push({
+                id: Date.now(),
+                question,
+                answer,
+                isFlipped: false
+            });
+            
+            saveAllData();
+            renderFlashcards();
+            
+            document.getElementById('flashcardQuestion').value = '';
+            document.getElementById('flashcardAnswer').value = '';
+            
+            showNotification('Flashcard berhasil ditambahkan!');
+        }
+        
+        function renderFlashcards() {
+            const flashcardDisplay = document.getElementById('flashcardDisplay');
+            const flashcardCounter = document.getElementById('flashcardCounter');
+            
+            if (data.flashcards.length === 0) {
+                flashcardDisplay.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-layer-group"></i>
+                        <p>Belum ada flashcard</p>
+                    </div>
+                `;
+                flashcardCounter.textContent = '0/0';
+                return;
+            }
+            
+            // Reset current flashcard if out of bounds
+            if (data.currentFlashcard >= data.flashcards.length) {
+                data.currentFlashcard = 0;
+            }
+            
+            const current = data.flashcards[data.currentFlashcard];
+            const displayText = current.isFlipped ? current.answer : current.question;
+            
+            flashcardDisplay.innerHTML = `
+                <div class="flashcard" onclick="flipFlashcard()">
+                    ${displayText}
+                </div>
+            `;
+            
+            flashcardCounter.textContent = `${data.currentFlashcard + 1}/${data.flashcards.length}`;
+        }
+        
+        function flipFlashcard() {
+            if (data.flashcards.length === 0) return;
+            
+            data.flashcards[data.currentFlashcard].isFlipped = !data.flashcards[data.currentFlashcard].isFlipped;
+            saveAllData();
+            renderFlashcards();
+        }
+        
+        function nextFlashcard() {
+            if (data.flashcards.length === 0) return;
+            
+            data.currentFlashcard = (data.currentFlashcard + 1) % data.flashcards.length;
+            // Reset flip state for new card
+            data.flashcards[data.currentFlashcard].isFlipped = false;
+            saveAllData();
+            renderFlashcards();
+        }
+        
+        function prevFlashcard() {
+            if (data.flashcards.length === 0) return;
+            
+            data.currentFlashcard = (data.currentFlashcard - 1 + data.flashcards.length) % data.flashcards.length;
+            // Reset flip state for new card
+            data.flashcards[data.currentFlashcard].isFlipped = false;
+            saveAllData();
+            renderFlashcards();
+        }
+
+        // --- Fitur Code Snippets ---
+        function addSnippet() {
+            const title = document.getElementById('snippetTitle').value;
+            const language = document.getElementById('snippetLanguage').value;
+            const code = document.getElementById('snippetCode').value;
+            
+            if (!title || !code) {
+                showNotification('Judul dan kode snippet harus diisi!', 'error');
+                return;
+            }
+            
+            data.snippets.push({
+                id: Date.now(),
+                title,
+                language,
+                code,
+                createdAt: new Date().toISOString()
+            });
+            
+            saveAllData();
+            renderSnippets();
+            
+            document.getElementById('snippetTitle').value = '';
+            document.getElementById('snippetCode').value = '';
+            
+            showNotification('Snippet berhasil disimpan!');
+        }
+        
+        function renderSnippets() {
+            const snippetList = document.getElementById('snippetList');
+            
+            if (data.snippets.length === 0) {
+                snippetList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-code"></i>
+                        <p>Belum ada code snippet</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            snippetList.innerHTML = data.snippets.map(snippet => `
+                <div class="snippet-item">
+                    <h3>${snippet.title} <span style="font-size: 0.8em; color: var(--text-light);">(${snippet.language})</span></h3>
+                    <pre class="code-snippet"><code>${snippet.code}</code></pre>
+                    <div class="snippet-actions">
+                        <button class="btn btn-outline" onclick="copySnippet(${snippet.id})">
+                            <i class="fas fa-copy"></i> Salin
+                        </button>
+                        <button class="btn btn-danger" onclick="deleteSnippet(${snippet.id})">
+                            <i class="fas fa-trash"></i> Hapus
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function copySnippet(id) {
+            const snippet = data.snippets.find(s => s.id === id);
+            if (snippet) {
+                navigator.clipboard.writeText(snippet.code).then(() => {
+                    showNotification('Kode berhasil disalin!');
+                });
+            }
+        }
+        
+        function deleteSnippet(id) {
+            data.snippets = data.snippets.filter(snippet => snippet.id !== id);
+            saveAllData();
+            renderSnippets();
+            showNotification('Snippet dihapus!');
+        }
+
+        // --- Fitur Resources ---
+        function addResource() {
+            const title = document.getElementById('resourceTitle').value;
+            const url = document.getElementById('resourceUrl').value;
+            const category = document.getElementById('resourceCategory').value;
+            
+            if (!title || !url) {
+                showNotification('Judul dan URL resource harus diisi!', 'error');
+                return;
+            }
+            
+            // Validate URL
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                showNotification('URL harus dimulai dengan http:// atau https://', 'error');
+                return;
+            }
+            
+            data.resources.push({
+                id: Date.now(),
+                title,
+                url,
+                category
+            });
+            
+            saveAllData();
+            renderResources();
+            
+            document.getElementById('resourceTitle').value = '';
+            document.getElementById('resourceUrl').value = '';
+            
+            showNotification('Resource berhasil disimpan!');
+        }
+        
+        function renderResources() {
+            const resourceList = document.getElementById('resourceList');
+            
+            if (data.resources.length === 0) {
+                resourceList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-book"></i>
+                        <p>Belum ada resource</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            resourceList.innerHTML = data.resources.map(resource => `
+                <a href="${resource.url}" target="_blank" class="resource-link">
+                    <i class="fas fa-external-link-alt"></i>
+                    <div>
+                        <strong>${resource.title}</strong>
+                        <div style="font-size: 0.85em; color: var(--text-light);">${resource.category}</div>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        // --- Fitur Habit Tracker ---
+        function addHabit() {
+            const title = document.getElementById('habitTitle').value;
+            
+            if (!title) {
+                showNotification('Judul habit harus diisi!', 'error');
+                return;
+            }
+            
+            // Initialize with current week (7 days)
+            const completed = new Array(7).fill(false);
+            
+            data.habits.push({
+                id: Date.now(),
+                title,
+                completed,
+                createdAt: new Date().toISOString()
+            });
+            
+            saveAllData();
+            renderHabits();
+            
+            document.getElementById('habitTitle').value = '';
+            
+            showNotification('Habit berhasil ditambahkan!');
+        }
+        
+        function renderHabits() {
+            const habitList = document.getElementById('habitList');
+            
+            if (data.habits.length === 0) {
+                habitList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-fire"></i>
+                        <p>Belum ada habit yang dilacak</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const dayNames = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+            
+            habitList.innerHTML = data.habits.map(habit => `
+                <div class="note-item">
+                    <div style="margin-bottom: 10px;">
+                        <strong>${habit.title}</strong>
+                    </div>
+                    <div class="habit-tracker">
+                        ${habit.completed.map((completed, index) => `
+                            <div class="habit-day ${completed ? 'completed' : ''}" 
+                                 onclick="toggleHabitDay(${habit.id}, ${index})"
+                                 title="${dayNames[index]}">
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <button class="btn btn-danger" onclick="deleteHabit(${habit.id})">
+                            <i class="fas fa-trash"></i> Hapus
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function toggleHabitDay(habitId, dayIndex) {
+            const habit = data.habits.find(h => h.id === habitId);
+            if (habit) {
+                habit.completed[dayIndex] = !habit.completed[dayIndex];
+                saveAllData();
+                renderHabits();
+            }
+        }
+        
+        function deleteHabit(id) {
+            data.habits = data.habits.filter(habit => habit.id !== id);
+            saveAllData();
+            renderHabits();
+            showNotification('Habit dihapus!');
+        }
+
+        // --- Fitur Dashboard ---
+        function updateDashboard() {
+            const totalTasks = data.tasks.length;
+            const completedTasks = data.tasks.filter(task => task.completed).length;
+            const progressPercentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+            
+            document.getElementById('taskCount').textContent = totalTasks;
+            document.getElementById('completedTasks').textContent = completedTasks;
+            document.getElementById('pomodoroCount').textContent = data.pomodoroStats.total;
+            document.getElementById('taskProgress').style.width = `${progressPercentage}%`;
+            document.getElementById('taskProgress').textContent = `${progressPercentage}%`;
+            
+            // Calculate GPA
+            const gpa = calculateGPA();
+            document.getElementById('currentGPAStat').textContent = gpa.toFixed(2);
+        }
+        
+        function updateStudyStats() {
+            // Simulate study stats (in a real app, this would be calculated from actual data)
+            const todayHours = Math.floor(Math.random() * 6);
+            const weekHours = Math.floor(Math.random() * 30);
+            const monthHours = Math.floor(Math.random() * 120);
+            
+            document.getElementById('studyToday').textContent = `${todayHours} jam`;
+            document.getElementById('studyWeek').textContent = `${weekHours} jam`;
+            document.getElementById('studyMonth').textContent = `${monthHours} jam`;
+        }
+        
+        function calculateGPA() {
+            if (data.grades.length === 0) return 0;
+            
+            let totalPoints = 0;
+            let totalCredits = 0;
+            
+            data.grades.forEach(grade => {
+                const points = getGradePoint(grade.value);
+                totalPoints += points * grade.sks;
+                totalCredits += grade.sks;
+            });
+            
+            return totalCredits > 0 ? totalPoints / totalCredits : 0;
+        }
+
+        // --- Fungsi Bantuan ---
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            
+            if (document.body.classList.contains('dark-mode')) {
+                document.getElementById('themeToggle').innerHTML = '<i class="fas fa-sun"></i>';
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                document.getElementById('themeToggle').innerHTML = '<i class="fas fa-moon"></i>';
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        }
+        
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+            
+            notificationText.textContent = message;
+            notification.className = 'notification';
+            notification.classList.add(type);
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        function showQuickAddMenu() {
+            // In a real app, this would show a modal or dropdown for quick adding
+            showNotification('Fitur Quick Add akan segera hadir!', 'warning');
+        }
+        
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const options = { day: 'numeric', month: 'short', year: 'numeric' };
+            return new Date(dateString).toLocaleDateString('id-ID', options);
+        }
+    </script>
+</body>
+</html>
